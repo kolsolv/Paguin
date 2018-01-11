@@ -4,6 +4,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" media="screen" href="./preview_files/milan-166b0946bcb11ea3afe27305006ff6239f1197201a3d0074b4ff00128f941289.css">
   <script src="./index.js"></script>
+  <script src="./containerSizes.js"></script>
   <style>
     .setting--primary-text {
       color: #FC0F0F;
@@ -12,11 +13,13 @@
     body,
     .preview-box {
       overflow: initial !important;
+      border: 1px solid #000;
+      position: relative
     }
 
     .body--preview {
-      border: 1px solid #000;
-      position: relative
+      border: none;
+      position: relative;
     }
 
     .resizer {
@@ -30,8 +33,10 @@
     }
   </style>
 </head>
-
 <body class="body--preview">
+  <button class="button__cut">Cut page</button>
+  <button class="button__previous">Previous page</button>
+  <button class="button__next">Next page</button>
   <div class="preview-box">
     <div class="container">
       <div class="container__main">
