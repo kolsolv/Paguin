@@ -136,12 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   nextButton.onclick = function() {
     nextPage()
-    const container = document.querySelector('.preview-box')
-
-    const resizer = document.createElement('div')
-    resizer.className = 'resizer'
-    container.appendChild(resizer)
-    resizer.addEventListener('mousedown', initDrag, false)
   }
 
   previousButton.onclick = function() {
