@@ -5,9 +5,14 @@ document.addEventListener('DOMContentLoaded', function() {
   // --
 
   // Global arrays
-  let nodesForHiding = []
+  let hiddenNodes = []
   let innerNodes = []
-  const root = document.querySelector('.body--preview')
+  const root = document.querySelector('.preview-box')
+  const cutButton = document.querySelector('.button__cut')
+  const nextButton = document.querySelector('.button__next')
+  const previousButton = document.querySelector('.button__previous')
+  let states = []
+  let currentPage = 0
 
   function fitsIn(source, dest) {
     return (
@@ -18,31 +23,34 @@ document.addEventListener('DOMContentLoaded', function() {
     )
   }
 
-  function guidGenerator() {
-    const S4 = function() {
-       return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
-    };
-    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4())
-  }
-
   function checkVisible(node, rootRect) {
     const children = node.childNodes
     const ELEMENT_NODE = 1
 
+    if (node.style) {
+      if (node.style.breakInside === 'avoid') {
+        const nodeRect = node.getBoundingClientRect()
+        if (!fitsIn(nodeRect, rootRect)) {
+          hiddenNodes.push(node)
+        } else {
+          innerNodes.push(node)
+        }
+        return
+      }
+    }
+
     if (node.nodeType === 3 && node.wholeText.trim() != '') {
-      node.parentNode.id = guidGenerator()
       const parentNodeRect = node.parentNode.getBoundingClientRect()
       if (!fitsIn(parentNodeRect, rootRect)) {
-        nodesForHiding.push(node.parentNode)
+        hiddenNodes.push(node.parentNode)
       } else {
         innerNodes.push(node.parentNode)
       }
     }
 
     if (node.nodeType === 1 && children.length === 0) {
-      node.id = guidGenerator()
       if (!fitsIn(node.getBoundingClientRect(), rootRect)) {
-        nodesForHiding.push(node)
+        hiddenNodes.push(node)
       } else {
         innerNodes.push(node)
       }
@@ -53,93 +61,90 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  function checkFinalElementVisible(node, rootRect) {
+    const nodeRect = node.getBoundingClientRect()
+    return fitsIn(nodeRect, rootRect)
+  }
+
   function hideNodes() {
-    nodesForHiding.forEach(function(item, i, arr) {
+    hiddenNodes.forEach(function(item, i, arr) {
       item.style.display = 'none'
     })
   }
 
   function showNodes() {
-    nodesForHiding.forEach(function(item, i, arr) {
-      item.style.display = 'initial'
+    hiddenNodes.forEach(function(item, i, arr) {
+      item.style.display = ''
     })
 
-    nodesForHiding = []
+    hiddenNodes = []
   }
 
-  function showAllPage(node) {
-    const children = node.childNodes
+  function nextPage() {
+    const rootRect = root.getBoundingClientRect()
 
-    const hiddenNode = nodesForHiding.findIndex(function(item, i, arr) {
-        return item.id === node.id
+    // innerNodes of previous page
+    innerNodes.forEach(function(item, i, arr) {
+      item.style.display = 'none'
+    })
+    innerNodes = []
+
+    // hide hiddenNodes of previous page if they !fits, otherwice add to new innerNodes
+    let hiddenNodesTemp = []
+    hiddenNodes.forEach(function(item, i, arr) {
+      item.style.display = ''
+      if (!checkFinalElementVisible(item, rootRect)) {
+        hiddenNodesTemp.push(item)
+        item.style.display = 'none'
+      } else {
+        innerNodes.push(item)
       }
-    )
+    })
 
-    if (hiddenNode !== -1) {
-      node.style.display = 'initial'
-    }
-
-    const innderNode = innerNodes.findIndex(function(item, i, arr) {
-        return item.id === node.id
-      }
-    )
-
-    if (innderNode !== -1) {
-      node.style.display = 'none'
-    }
-
-    for (var i = 0; i < children.length; ++i) {
-      showAllPage(children[i])
-    }
+    hiddenNodes = hiddenNodesTemp.slice()
+    console.log(hiddenNodes)
+    states.push({visible: innerNodes.slice(), hidden: hiddenNodes.slice()})
+    ++currentPage
   }
 
-  function createPages() {
-    let pagesList = document.querySelectorAll('.body--preview')
-    if (pagesList.length > 1) {
-      pagesList[1].parentNode.removeChild(pagesList[1]);
-    }
+  function previousPage() {
+    if (!currentPage) return
 
-    const newPage = root.cloneNode(true)
-    showAllPage(newPage)
-    root.appendChild(newPage)
+    --currentPage
+    // load hiddenNodes and innerNodes of the current page
+    hiddenNodes = states[currentPage].hidden
+    innerNodes = states[currentPage].visible
+
+    hiddenNodes.forEach(function(item, i, arr) {
+      item.style.display = 'none'
+    })
+
+    innerNodes.forEach(function(item, i, arr) {
+      item.style.display = ''
+    })
   }
-
-  // checkVisible(root)
 
   // --
-  // Make container resizable
+  // Handlers
   // --
-  const container = document.querySelector('.body--preview')
-
-  const resizer = document.createElement('div')
-  resizer.className = 'resizer'
-  container.appendChild(resizer)
-  resizer.addEventListener('mousedown', initDrag, false)
-
-
-  let startX, startY, startWidth, startHeight
-
-  function initDrag(e) {
-     startX = e.clientX
-     startY = e.clientY
-     startWidth = parseInt(document.defaultView.getComputedStyle(container).width, 10)
-     startHeight = parseInt(document.defaultView.getComputedStyle(container).height, 10)
-     document.documentElement.addEventListener('mousemove', doDrag, false)
-     document.documentElement.addEventListener('mouseup', stopDrag, false)
+  cutButton.onclick = function() {
+    const rootRect = root.getBoundingClientRect()
+    checkVisible(root, rootRect)
+    hideNodes()
+    states.push({visible: innerNodes.slice(), hidden: hiddenNodes.slice()})
   }
 
-  function doDrag(e) {
-     container.style.height = (startHeight + e.clientY - startY) + 'px'
+  nextButton.onclick = function() {
+    nextPage()
+    const container = document.querySelector('.preview-box')
+
+    const resizer = document.createElement('div')
+    resizer.className = 'resizer'
+    container.appendChild(resizer)
+    resizer.addEventListener('mousedown', initDrag, false)
   }
 
-  function stopDrag(e) {
-      document.documentElement.removeEventListener('mousemove', doDrag, false)
-      document.documentElement.removeEventListener('mouseup', stopDrag, false)
-
-      const rootRect = root.getBoundingClientRect()
-      showNodes()
-      checkVisible(root, rootRect)
-      hideNodes()
-      createPages()
+  previousButton.onclick = function() {
+    previousPage()
   }
 }, false)
