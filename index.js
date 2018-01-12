@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function checkVisible(node, rootRect) {
+    let sum = 0
     const children = node.childNodes
     const ELEMENT_NODE = 1
 
@@ -32,37 +33,63 @@ document.addEventListener('DOMContentLoaded', function() {
         const nodeRect = node.getBoundingClientRect()
         if (!fitsIn(nodeRect, rootRect)) {
           hiddenNodes.push(node)
+          return 0
         } else {
           innerNodes.push(node)
+          return 1
         }
-        return
       }
     }
 
-    if (node.nodeType === 3 && node.wholeText.trim() != '') {
-      const parentNodeRect = node.parentNode.getBoundingClientRect()
-      if (!fitsIn(parentNodeRect, rootRect)) {
-        hiddenNodes.push(node.parentNode)
+    if (node.nodeType === 3) {
+      if (node.wholeText.trim() !== '') {
+        const parentNodeRect = node.parentNode.getBoundingClientRect()
+        if (!fitsIn(parentNodeRect, rootRect)) {
+          hiddenNodes.push(node.parentNode)
+          return 0
+        } else {
+          innerNodes.push(node.parentNode)
+          return 1
+        }
       } else {
-        innerNodes.push(node.parentNode)
+        return 1
       }
     }
 
     if (node.nodeType === 1 && children.length === 0) {
+      if(node.tagName === 'BR') {
+        innerNodes.push(node)
+        return 1
+      }
+
       if (!fitsIn(node.getBoundingClientRect(), rootRect)) {
         hiddenNodes.push(node)
+        return 0
       } else {
         innerNodes.push(node)
+        return 1
       }
     }
 
+
     for (var i = 0; i < children.length; ++i) {
-      checkVisible(children[i], rootRect)
+      const res = checkVisible(children[i], rootRect)
+      sum += res
     }
+
+    if (sum === children.length && children.length !== 0) {
+      innerNodes.push(node)
+
+      return 1
+    }
+    return 0
   }
 
   function checkFinalElementVisible(node, rootRect) {
     const nodeRect = node.getBoundingClientRect()
+    if (node.className === 'icon--location') {
+      console.log(nodeRect)
+    }
     return fitsIn(nodeRect, rootRect)
   }
 
@@ -102,7 +129,6 @@ document.addEventListener('DOMContentLoaded', function() {
     })
 
     hiddenNodes = hiddenNodesTemp.slice()
-    console.log(hiddenNodes)
     states.push({visible: innerNodes.slice(), hidden: hiddenNodes.slice()})
     ++currentPage
   }
@@ -142,3 +168,4 @@ document.addEventListener('DOMContentLoaded', function() {
     previousPage()
   }
 }, false)
+//
