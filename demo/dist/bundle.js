@@ -78,13 +78,14 @@ document.addEventListener('DOMContentLoaded', function () {
   const nextButton = document.querySelector('.button__next');
   const previousButton = document.querySelector('.button__previous');
 
-  const paginator = new __WEBPACK_IMPORTED_MODULE_0__src_Paguin__["a" /* default */](root, root, {});
+  let paginator;
 
   // --
   // Handlers
   // --
   cutButton.onclick = function () {
-    const currentPage = paginator.getCurrentPage();
+    paginator = new __WEBPACK_IMPORTED_MODULE_0__src_Paguin__["a" /* default */](root, root, { ignoreElements: true });
+    // const currentPage = paginator.getCurrentPage()
     // root.innerHTML = currentPage.innerHTML
   };
 
@@ -106,11 +107,14 @@ class Paguin {
   constructor(rootElement, containerElement, options) {
     this.hiddenNodes = [];
     this.innerNodes = [];
-    this.root = rootElement; //.cloneNode(true)
+    this.root = rootElement;
     this.container = containerElement;
     this.states = [];
+    this.completed = false;
     this.currentPage = 0;
-
+    this.totalPages = 1;
+    this.ignoreElements = options.ignoreElements;
+    this.ignoredList = ['dont-hide-me'];
     this.paginate();
   }
 
@@ -131,20 +135,11 @@ class Paguin {
     let sum = 0;
     const children = node.childNodes;
 
-    if (node.style) {
-      if (node.style.breakInside === 'avoid') {
-        const nodeRect = node.getBoundingClientRect();
-        if (!this.fitsIn(nodeRect, containerRect)) {
-          this.hiddenNodes.push(node);
-          return 0;
-        } else {
-          this.innerNodes.push(node);
-          return 1;
-        }
-      }
-    }
-
     if (node.nodeType === 3) {
+      if (this.ignoreElements && this.checkClassNameContains(this.ignoredList, node.parentNode.className)) {
+        return 1;
+      }
+
       if (node.wholeText.trim() !== '') {
         const parentNodeRect = node.parentNode.getBoundingClientRect();
         if (!this.fitsIn(parentNodeRect, containerRect)) {
@@ -159,18 +154,41 @@ class Paguin {
       }
     }
 
-    if (node.nodeType === 1 && children.length === 0) {
-      if (node.tagName === 'BR') {
-        this.innerNodes.push(node);
-        return 1;
+    if (node.nodeType === 1) {
+      if (this.getStyleValue(node, 'breakInside') === 'avoid') {
+        if (this.ignoreElements && this.checkClassNameContains(this.ignoredList, node.className)) {
+          return 0;
+        }
+
+        const nodeRect = node.getBoundingClientRect();
+        if (!this.fitsIn(nodeRect, containerRect)) {
+          this.hiddenNodes.push(node);
+          return 0;
+        } else {
+          this.innerNodes.push(node);
+          return 1;
+        }
       }
 
-      if (!this.fitsIn(node.getBoundingClientRect(), containerRect)) {
-        this.hiddenNodes.push(node);
-        return 0;
-      } else {
+      if (this.getStyleValue(node, 'display') === 'inline') {
+        const parentNodeRect = node.parentNode.getBoundingClientRect();
+        if (!this.fitsIn(parentNodeRect, containerRect)) return 1;
         this.innerNodes.push(node);
-        return 1;
+        return 0;
+      }
+
+      if (children.length === 0) {
+        if (this.ignoreElements && this.checkClassNameContains(this.ignoredList, node.className)) {
+          return 0;
+        }
+
+        if (!this.fitsIn(node.getBoundingClientRect(), containerRect)) {
+          this.hiddenNodes.push(node);
+          return 0;
+        } else {
+          this.innerNodes.push(node);
+          return 1;
+        }
       }
     }
 
@@ -180,11 +198,94 @@ class Paguin {
     }
 
     if (sum === children.length && children.length !== 0) {
-      this.innerNodes.push(node);
+      if (this.ignoreElements && this.checkClassNameContains(this.ignoredList, node.className)) {
+        return 0;
+      }
 
+      this.innerNodes.push(node);
       return 1;
     }
     return 0;
+  }
+
+  recursiveCleaner(node) {
+    const children = node.childNodes;
+
+    if (this.hiddenNodes.indexOf(node) !== -1) {
+      return 0;
+    }
+
+    if (node.nodeType === 3) {
+      if (node.parentNode.childNodes.length === 1) return 0;else return 1;
+    }
+
+    if (this.getStyleValue(node, 'display') === 'none') return 1;
+
+    let sum = 0;
+    for (var i = 0; i < children.length; ++i) {
+      const res = this.recursiveCleaner(children[i]);
+      sum += res;
+    }
+
+    if (children.length !== 0) {
+      if (this.ignoreElements && this.checkClassNameContains(this.ignoredList, node.className)) {
+        return 0;
+      }
+
+      if (sum === children.length) {
+        node.style.display = 'none';
+        return 1;
+      }
+    }
+
+    return 0;
+  }
+
+  recursiveVisualisator(node) {
+    const children = node.childNodes;
+
+    if (!node.style || node.nodeType === 3) {
+      return this.getStyleValue(node.parentNode, 'display') === 'none' ? 1 : 0;
+    }
+
+    if (node.nodeType === 1) {
+      if (this.getStyleValue(node, 'breakInside') === 'avoid') {
+        return this.getStyleValue(node, 'display') === 'none' ? 1 : 0;
+      }
+
+      if (this.getStyleValue(node, 'display') === 'inline') {
+        return this.getStyleValue(node.parentNode, 'display') === 'none' ? 1 : 0;
+      }
+
+      if (children.length === 0) {
+        return this.getStyleValue(node, 'display') === 'none' ? 1 : 0;
+      }
+    }
+
+    let sum = 0;
+    for (var i = 0; i < children.length; ++i) {
+      const res = this.recursiveVisualisator(children[i]);
+      sum += res;
+    }
+
+    if (children.length !== 0) {
+      if (sum !== children.length) {
+        node.style.display = '';
+      }
+    }
+
+    return this.getStyleValue(node, 'display') === 'none' ? 1 : 0;
+  }
+
+  getStyleValue(node, field) {
+    return window.getComputedStyle(node)[field];
+  }
+
+  checkClassNameContains(classes, className) {
+    const splitedClasses = className.split(' ');
+    return splitedClasses.some(elt => {
+      return classes.indexOf(elt) !== -1;
+    });
   }
 
   fitsIn(source, dest) {
@@ -202,42 +303,53 @@ class Paguin {
     });
   }
 
-  showNodes() {
-    this.hiddenNodes.forEach(function (item, i, arr) {
-      item.style.display = '';
-    });
-
-    this.hiddenNodes = [];
-  }
-
   nextPage() {
+    if (this.completed && this.currentPage === this.totalPages - 1) return null;
+    ++this.currentPage;
+
     const containerRect = this.container.getBoundingClientRect();
 
     // innerNodes of previous page
     this.innerNodes.forEach(function (item, i, arr) {
       item.style.display = 'none';
-    });
+    }, this);
     this.innerNodes = [];
 
     // hide hiddenNodes of previous page if they !fits,
     // otherwice add to new innerNodes
     let hiddenNodesTemp = [];
-    this.hiddenNodes.forEach(function (item, i, arr) {
-      item.style.display = '';
-      if (!this.checkFinalElementVisible(item, containerRect)) {
-        hiddenNodesTemp.push(item);
-        item.style.display = 'none';
+    this.hiddenNodes.every(function (item, i) {
+      // if object is inline then we need to check it's parent
+      let curItem = item;
+      if (this.getStyleValue(item, 'display') === 'inline') {
+        curItem = item.parentNode;
+      }
+
+      curItem.style.display = '';
+
+      if (!this.checkFinalElementVisible(curItem, containerRect)) {
+        curItem.style.display = 'none';
+        hiddenNodesTemp = this.hiddenNodes.slice(i, this.hiddenNodes.length);
+        return false;
       } else {
-        this.innerNodes.push(item);
+        this.innerNodes.push(curItem);
+        return true;
       }
     }, this);
+
+    this.recursiveCleaner(this.root);
 
     this.hiddenNodes = hiddenNodesTemp.slice();
     this.states.push({
       visible: this.innerNodes.slice(),
       hidden: this.hiddenNodes.slice()
     });
-    ++this.currentPage;
+
+    if (!this.completed) this.totalPages++;
+
+    if (this.hiddenNodes.length === 0) {
+      this.completed = true;
+    }
   }
 
   previousPage() {
@@ -255,10 +367,16 @@ class Paguin {
     this.innerNodes.forEach(function (item, i, arr) {
       item.style.display = '';
     });
+
+    this.recursiveVisualisator(this.root);
   }
 
   getCurrentPage() {
     return this.root;
+  }
+
+  isComplete() {
+    return this.completed;
   }
 }
 

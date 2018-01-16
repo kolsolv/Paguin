@@ -40,7 +40,7 @@
   <div class="preview-box" id="preview-box">
     <div class="container">
       <div class="container__main">
-        <div class="sidebar">
+        <div class="sidebar dont-hide-me">
           <div class="sidebar__photo-section">
             <div class="sidebar__photo" style="background-image: url(https://resumeiostorage.s3.amazonaws.com/uploads/user/avatar/1/medium_squared_3fd2e8ea978d12bf7cb75411132b5e54.JPG)"></div>
           </div>
@@ -197,12 +197,12 @@
           <div class="main__section">
             <div class="section__title setting--primary-text">Education</div>
             <div class="main__content">
-              <div class="main__content-item" style="page-break-inside: avoid;">
+              <div class="main__content-item" id="anchor" style="page-break-inside: avoid;">
                 <div class="main__content-title">Hogskolan i Halmstad, Exchange programme</div>
                 <div class="main__content-subtitle">
                   <div class="main__content-date">Jan 2013 – Jun 2013</div>
                   <div class="main__content-location">
-                    <div class="icon--location"></div>Halmstad, Sweden</div>
+                    <div class="icon--location"></div><span>Halmstad, Sweden</span></div>
                 </div>
                 <div class="main__content-caption">
                   <div>As a part of Erasmus programme I've been studying Electrical Engineering in Halmstad University
@@ -218,7 +218,7 @@
                 <div class="main__content-subtitle">
                   <div class="main__content-date">Sep 2008 – Jun 2014</div>
                   <div class="main__content-location">
-                    <div class="icon--location"></div>Rostov-on-Don</div>
+                    <div class="icon--location"></div><span>Rostov-on-Don</span></div>
                 </div>
                 <div class="main__content-caption"></div>
               </div>
@@ -232,7 +232,7 @@
                 <div class="main__content-subtitle">
                   <div class="main__content-date">Sep 2009 – Aug 2013</div>
                   <div class="main__content-location">
-                    <div class="icon--location"></div>Rostov-on-Don</div>
+                    <div class="icon--location"></div><span>Rostov-on-Don</span></div>
                 </div>
                 <div class="main__content-caption">
                   <div>Was working in a research lab where I did a lot of system and network programming. Took part in a projects
@@ -247,7 +247,7 @@
                 <div class="main__content-subtitle">
                   <div class="main__content-date">Sep 2013 – Feb 2014</div>
                   <div class="main__content-location">
-                    <div class="icon--location"></div>Rostov-on-Don</div>
+                    <div class="icon--location"></div><span>Rostov-on-Don</span></div>
                 </div>
                 <div class="main__content-caption">
                   <div>Built several web-experiments and advert projects using Node.js, Socket.io, Web Audio API and Canvas APIs.
@@ -260,7 +260,9 @@
                 <div class="main__content-subtitle">
                   <div class="main__content-date">Feb 2014 – May 2016</div>
                   <div class="main__content-location">
-                    <div class="icon--location"></div>Rostov-on-Don</div>
+                    <div class="icon--location"></div>
+                    <span>Rostov-on-Don</span>
+                  </div>
                 </div>
                 <div class="main__content-caption">
                   <div>I've built the architecture and have implemented 3 client-side single-page apps all written using Ember.js
@@ -277,7 +279,7 @@
                 <div class="main__content-subtitle">
                   <div class="main__content-date">Jun 2016 – Aug 2016</div>
                   <div class="main__content-location">
-                    <div class="icon--location"></div>Remote work</div>
+                    <div class="icon--location"></div><span>Remote work</span></div>
                 </div>
                 <div class="main__content-caption">
                   <div>Was working remotely with Evil Martians team
@@ -291,7 +293,7 @@
                 <div class="main__content-subtitle">
                   <div class="main__content-date">Jul 2016 – Present</div>
                   <div class="main__content-location">
-                    <div class="icon--location"></div>Remote</div>
+                    <div class="icon--location"></div><span>Remote</span></div>
                 </div>
                 <div class="main__content-caption">
                   <div>As a cofounder I built a working web-based resume generator for the client from Netherlands. We got first
