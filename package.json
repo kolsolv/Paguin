@@ -1,4 +1,22 @@
 {
+  "name": "paguin",
+  "description": "Paginate your html page with JavaScript (just like PDFs).",
+  "version": "1.0.0",
+  "main": "src/Paguin.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kolsolv/Paguin.git"
+  },
+  "keywords": ["html", "js", "pagination"],
+  "author": "Sergey Kolesnikov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kolsolv/Paguin/issues"
+  },
+  "homepage": "https://github.com/kolsolv/Paguin#readme",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
