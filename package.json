@@ -4,13 +4,18 @@
   "version": "1.0.0",
   "main": "src/Paguin.js",
   "scripts": {
+    "build": "babel src --out-dir dist",
     "test": "jest"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kolsolv/Paguin.git"
   },
-  "keywords": ["html", "js", "pagination"],
+  "keywords": [
+    "html",
+    "js",
+    "pagination"
+  ],
   "author": "Sergey Kolesnikov",
   "license": "ISC",
   "bugs": {
@@ -18,16 +23,13 @@
   },
   "homepage": "https://github.com/kolsolv/Paguin#readme",
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-eslint": "^7.2.3",
-    "babel-jest": "^17.0.2",
-    "babel-preset-es2015": "^6.14.0",
-    "babel-preset-stage-0": "^6.16.0",
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.1",
+    "babel-preset-env": "^1.6.1",
     "eslint": "^4.10.0",
     "eslint-config-prettier": "^2.3.0",
-    "eslint-plugin-prettier": "^2.1.2",
     "eslint-plugin-jest": "^21.2.0",
+    "eslint-plugin-prettier": "^2.1.2",
     "prettier": "^1.5.3",
     "webpack": "^3.6.0"
   }
