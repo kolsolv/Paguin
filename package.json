@@ -5,17 +5,14 @@
   "main": "src/Paguin.js",
   "scripts": {
     "build": "babel src --out-dir dist",
+    "dev": "parcel demo/index.html",
     "test": "jest"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kolsolv/Paguin.git"
   },
-  "keywords": [
-    "html",
-    "js",
-    "pagination"
-  ],
+  "keywords": ["html", "js", "pagination"],
   "author": "Sergey Kolesnikov",
   "license": "ISC",
   "bugs": {
@@ -30,6 +27,7 @@
     "eslint-config-prettier": "^2.3.0",
     "eslint-plugin-jest": "^21.2.0",
     "eslint-plugin-prettier": "^2.1.2",
+    "parcel-bundler": "^1.5.1",
     "prettier": "^1.5.3",
     "webpack": "^3.6.0"
   }
