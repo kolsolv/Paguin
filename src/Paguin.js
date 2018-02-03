@@ -11,54 +11,8 @@ class Paguin {
     this.totalPages = 1
     this.ignoreElements = options.ignoreElements
     this.ignoredList = ['dont-hide-me']
-    this.showedElementsCount = 0
-    this.elementsCount = 0
-
-    this.countAllElements(this.root)
 
     this.paginate()
-  }
-
-  countAllElements(node) {
-    if (node.nodeType === 3) {
-      return this.elementsCount++
-    }
-
-    if (node.childNodes.length === 0) {
-      return this.elementsCount++
-    }
-
-    for (var i = 0; i < node.childNodes.length; ++i) {
-      this.countAllElements(node.childNodes[i])
-    }
-
-    this.elementsCount++
-  }
-
-  countVisibleElements(node) {
-    if (node.nodeType === 3) {
-      if (this.getStyleValue(node.parentNode, 'display') !== 'none') {
-        this.showedElementsCount++
-      }
-
-      return
-    }
-
-    if (node.childNodes.length === 0) {
-      if (this.getStyleValue(node, 'display') !== 'none') {
-        this.showedElementsCount++
-      }
-
-      return
-    }
-
-    for (var i = 0; i < node.childNodes.length; ++i) {
-      this.countAllElements(node.childNodes[i])
-    }
-
-    if (this.getStyleValue(node, 'display') !== 'none') {
-      this.showedElementsCount++
-    }
   }
 
   paginate() {
@@ -245,8 +199,6 @@ class Paguin {
 
     this.checkVisible(this.root, containerRect)
     this.hideNodes()
-
-    this.countVisibleElements(this.root)
 
     this.states.push({
       visible: this.innerNodes.slice(),
