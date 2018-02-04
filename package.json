@@ -2,7 +2,7 @@
   "name": "paguin",
   "description": "Paginate your html page with JavaScript (just like PDFs).",
   "version": "1.0.0",
-  "main": "src/Paguin.js",
+  "main": "src/index.js",
   "scripts": {
     "build": "babel src --out-dir dist",
     "bundle": "parcel build src/index.js --out-dir bundle",
@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kolsolv/Paguin.git"
+    "url": "git+https://github.com/kolsolv/paguin.git"
   },
   "keywords": ["html", "js", "pagination"],
   "author": "Sergey Kolesnikov",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/kolsolv/Paguin/issues"
+    "url": "https://github.com/kolsolv/paguin/issues"
   },
-  "homepage": "https://github.com/kolsolv/Paguin#readme",
+  "homepage": "https://github.com/kolsolv/paguin#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.1",
