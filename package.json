@@ -5,6 +5,7 @@
   "main": "src/Paguin.js",
   "scripts": {
     "build": "babel src --out-dir dist",
+    "bundle": "parcel build src/index.js --out-dir bundle",
     "dev": "parcel demo/index.html",
     "test": "jest"
   },
