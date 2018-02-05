@@ -1,4 +1,4 @@
-const fitsIn = require('./fits-in').default
+const fitsIn = require('../src/fits-in').default
 
 describe('fitsIn function', () => {
   it('returns true when second rect contains first one', () => {
@@ -22,7 +22,7 @@ describe('fitsIn function', () => {
     expect(fitsIn(first, second)).toBe(true)
   })
 
-  xdescribe('when one of the params is falsey', () => {
+  describe('when one of the params is falsey', () => {
     it('returns false', () => {
       expect(fitsIn(null, {})).toBe(false)
       expect(fitsIn(null)).toBe(false)

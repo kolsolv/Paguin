@@ -1,5 +1,7 @@
 // Checks if one rect completely fits in another one
 function fitsIn(source, dest) {
+  if (!source || !dest) return false
+
   return (
     source.left >= dest.left &&
     source.left + source.width <= dest.left + dest.width &&
