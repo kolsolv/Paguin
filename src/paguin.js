@@ -1,3 +1,5 @@
+import fitsIn from './fits-in'
+
 class Paguin {
   constructor(rootElement, containerElement, options) {
     this.hiddenNodes = []
@@ -51,7 +53,7 @@ class Paguin {
 
       if (node.wholeText.trim() !== '') {
         const parentNodeRect = node.parentNode.getBoundingClientRect()
-        if (!this.fitsIn(parentNodeRect, containerRect)) {
+        if (!fitsIn(parentNodeRect, containerRect)) {
           if (this.hiddenNodes.indexOf(node.parentNode) === -1) {
             this.hiddenNodes.push(node.parentNode)
           }
@@ -77,7 +79,7 @@ class Paguin {
         }
 
         const nodeRect = node.getBoundingClientRect()
-        if (!this.fitsIn(nodeRect, containerRect)) {
+        if (!fitsIn(nodeRect, containerRect)) {
           this.hiddenNodes.push(node)
           return 0
         } else {
@@ -88,7 +90,7 @@ class Paguin {
 
       if (this.getStyleValue(node, 'display') === 'inline') {
         const parentNodeRect = node.parentNode.getBoundingClientRect()
-        if (!this.fitsIn(parentNodeRect, containerRect)) return 0
+        if (!fitsIn(parentNodeRect, containerRect)) return 0
         this.innerNodes.push(node)
         return 1
       }
@@ -101,7 +103,7 @@ class Paguin {
           return 0
         }
 
-        if (!this.fitsIn(node.getBoundingClientRect(), containerRect)) {
+        if (!fitsIn(node.getBoundingClientRect(), containerRect)) {
           this.hiddenNodes.push(node)
           return 0
         } else {
@@ -143,18 +145,9 @@ class Paguin {
     })
   }
 
-  fitsIn(source, dest) {
-    return (
-      source.left >= dest.left &&
-      source.left + source.width <= dest.left + dest.width &&
-      source.top >= dest.top &&
-      source.top + source.height <= dest.top + dest.height
-    )
-  }
-
   checkFinalElementVisible(node, containerRect) {
     const nodeRect = node.getBoundingClientRect()
-    return this.fitsIn(nodeRect, containerRect)
+    return fitsIn(nodeRect, containerRect)
   }
 
   hideNodes() {

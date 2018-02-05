@@ -93,6 +93,7 @@ Temporary Items
 
 # The folder contains compiled library bundle
 dist/
+bundle/
 
 # Parcel bundler's cache folder
 .cache
