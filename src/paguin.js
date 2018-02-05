@@ -11,8 +11,8 @@ class Paguin {
     this.completed = false
     this.currentPage = 0
     this.totalPages = 1
-    this.ignoreElements = options.ignoreElements
-    this.ignoredList = ['dont-hide-me']
+    this.ignoreElements = options.ignoreElements.length > 0
+    this.ignoredList = options.ignoreElements
 
     this.paginate()
   }

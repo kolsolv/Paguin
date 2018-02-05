@@ -14,9 +14,7 @@ document.addEventListener(
     // Handlers
     // --
     cutButton.onclick = function() {
-      paginator = new Paguin(root, root, { ignoreElements: true })
-      // const currentPage = paginator.getCurrentPage()
-      // root.innerHTML = currentPage.innerHTML
+      paginator = new Paguin(root, root, { ignoreElements: ['dont-hide-me'] })
     }
 
     nextButton.onclick = function() {
