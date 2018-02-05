@@ -242,6 +242,11 @@ class Paguin {
   isComplete() {
     return this.completed
   }
+
+  getTotalPagesCount() {
+    if (this.completed) return this.totalPages
+    else return null
+  }
 }
 
 export default Paguin
