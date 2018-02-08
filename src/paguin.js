@@ -239,6 +239,10 @@ class Paguin {
     return this.root
   }
 
+  getCurrentPageNumber() {
+    return this.currentPage
+  }
+
   isComplete() {
     return this.completed
   }
