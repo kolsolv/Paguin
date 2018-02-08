@@ -26,6 +26,11 @@ class Paguin {
       hidden: this.hiddenNodes.slice(),
       previousHidden: []
     })
+
+    if (!this.hiddenNodes.length) {
+      this.completed = true
+      this.totalPages = 1
+    }
   }
 
   // --
