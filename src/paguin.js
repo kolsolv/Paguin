@@ -2,19 +2,24 @@ import fitsIn from './fits-in'
 
 class Paguin {
   constructor(rootElement, containerElement, options) {
-    this.hiddenNodes = []
-    this.innerNodes = []
-    this.previousHiddenNodes = []
+    this.initPaginationState()
     this.root = rootElement
+    this.shadowRoot = rootElement.cloneNode(true)
     this.container = containerElement
-    this.states = []
-    this.completed = false
-    this.currentPage = 0
-    this.totalPages = 1
     this.ignoreElements = options.ignoreElements.length > 0
     this.ignoredList = options.ignoreElements
 
     this.paginate()
+  }
+
+  initPaginationState() {
+    this.hiddenNodes = []
+    this.innerNodes = []
+    this.previousHiddenNodes = []
+    this.states = []
+    this.completed = false
+    this.currentPage = 0
+    this.totalPages = 1
   }
 
   paginate() {
@@ -31,6 +36,11 @@ class Paguin {
       this.completed = true
       this.totalPages = 1
     }
+
+    while (!(this.completed && this.currentPage === this.totalPages - 1)) {
+      this.nextPage()
+    }
+    this.showPage(0)
   }
 
   // --
@@ -238,6 +248,7 @@ class Paguin {
     this.previousHiddenNodes.forEach(function(item) {
       item.style.display = 'none'
     })
+    this.currentPage = pageNumber
   }
 
   getCurrentPage() {
