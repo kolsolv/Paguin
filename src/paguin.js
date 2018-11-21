@@ -1,7 +1,10 @@
 import fitsIn from './fits-in'
 
+const RECURSION_CALLS_LIMIT = 100000
+
 class Paguin {
   constructor(rootElement, containerElement, options) {
+    this.recursiveCalls = 0
     this.initPaginationState()
     this.root = rootElement
     this.shadowRoot = rootElement.cloneNode(true)
@@ -47,6 +50,8 @@ class Paguin {
   // Main parser
   // --
   checkVisible(node, containerRect) {
+    this.recursiveCalls++
+    if (this.recursiveCalls > RECURSION_CALLS_LIMIT) return
     let sum = 0
     const children = node.childNodes
 
