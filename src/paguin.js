@@ -99,9 +99,10 @@ class Paguin {
         }
 
         const nodeRect = node.getBoundingClientRect()
+
         if (!fitsIn(nodeRect, containerRect)) {
-          this.hiddenNodes.push(node)
-          return 0
+          node.style.pageBreakInside = 'auto'
+          this.checkVisible(node, containerRect)
         } else {
           this.innerNodes.push(node)
           return 1
