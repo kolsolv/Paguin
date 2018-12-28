@@ -71,7 +71,7 @@ class Paguin {
         return 1
       }
 
-      if (node.wholeText.trim() !== '') {
+      if (node.wholeText.trim().length !== 0) {
         const parentNodeRect = node.parentNode.getBoundingClientRect()
         if (!fitsIn(parentNodeRect, containerRect)) {
           if (this.hiddenNodes.indexOf(node.parentNode) === -1) {
@@ -99,10 +99,14 @@ class Paguin {
         }
 
         const nodeRect = node.getBoundingClientRect()
-
         if (!fitsIn(nodeRect, containerRect)) {
-          node.style.pageBreakInside = 'auto'
-          this.checkVisible(node, containerRect)
+          if (nodeRect.height >= containerRect.height) {
+            node.style.pageBreakInside = 'auto'
+            this.checkVisible(node, containerRect)
+          } else {
+            this.hiddenNodes.push(node)
+            return 0
+          }
         } else {
           this.innerNodes.push(node)
           return 1
