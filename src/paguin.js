@@ -242,13 +242,32 @@ class Paguin {
     this.showPage(this.currentPage)
   }
 
+  getParents(node) {
+    const parents = []
+
+    while (
+      node.parentNode &&
+      node.parentNode.nodeName.toLowerCase() !== 'body'
+    ) {
+      node = node.parentNode
+      parents.push(node)
+    }
+
+    return parents
+  }
+
   showPage(pageNumber) {
     this.hiddenNodes = this.states[pageNumber].hidden.slice()
     this.innerNodes = this.states[pageNumber].visible.slice()
     this.previousHiddenNodes = this.states[pageNumber].previousHidden.slice()
 
-    this.innerNodes.forEach(function(item) {
+    this.innerNodes.forEach(item => {
       item.style.display = ''
+
+      // show parents
+      this.getParents(item).forEach(parent => {
+        parent.style.display = ''
+      })
     })
 
     this.hiddenNodes.forEach(function(item) {
